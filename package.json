@@ -4,7 +4,13 @@
   "description": "Simple Ripple wallet made in node using Ripple-lib",
   "author": "Filidor Wiese <fili@fili.nl>",
   "license": "ISC",
+  "scripts": {
+    "balance": "node scripts/balance.js || true",
+    "generate-wallet-offline": "node scripts/generate-wallet-offline.js || true",
+    "make-payment": "node scripts/make-payment.js || true"
+  },
   "dependencies": {
-    "ripple-lib": "^0.17.7"
+    "inquirer": "3.0.6",
+    "ripple-lib": "0.17.7"
   }
 }
