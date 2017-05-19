@@ -10,6 +10,7 @@
     "make-payment": "node scripts/make-payment.js || true"
   },
   "dependencies": {
+    "chalk": "1.1.3",
     "inquirer": "3.0.6",
     "ripple-lib": "0.17.7"
   }

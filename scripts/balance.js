@@ -1,8 +1,13 @@
 'use strict'
+const chalk = require('chalk')
 const inquirer = require('inquirer')
 const RippleAPI = require('ripple-lib').RippleAPI
 
 const RippleAddressRegex = new RegExp(/^r[rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{27,35}$/)
+
+console.log('-----------------------------------------------')
+console.log(chalk.green('Ripple wallet'), '-', chalk.yellow('Balance Check'))
+console.log('-----------------------------------------------')
 
 const questions = [
   {
