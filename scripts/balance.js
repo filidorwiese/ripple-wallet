@@ -2,12 +2,14 @@
 const inquirer = require('inquirer')
 const RippleAPI = require('ripple-lib').RippleAPI
 
+const RippleAddressRegex = new RegExp(/^r[rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{27,35}$/)
+
 const questions = [
   {
     type: 'input',
     name: 'wallet',
     message: 'Enter wallet address:',
-    validate: (value) => !!value
+    validate: (value) => value.match(RippleAddressRegex) ? true : 'Please enter a valid address'
   }
 ]
 

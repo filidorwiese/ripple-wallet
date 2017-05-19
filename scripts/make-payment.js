@@ -1,6 +1,9 @@
 'use strict'
 const inquirer = require('inquirer')
 const RippleAPI = require('ripple-lib').RippleAPI
+const deriveKeypair = require('ripple-keypairs').deriveKeypair
+
+const RippleAddressRegex = new RegExp(/^r[rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{27,35}$/)
 
 const questions = [
   {
@@ -13,7 +16,7 @@ const questions = [
     type: 'input',
     name: 'destinationAddress',
     message: 'Enter destination address:',
-    validate: (value) => !!value
+    validate: (value) => value.match(RippleAddressRegex) ? true : 'Please enter a valid address'
   },
   {
     type: 'input',
@@ -26,13 +29,20 @@ const questions = [
     type: 'input',
     name: 'sourceAddress',
     message: 'Enter sender address:',
-    validate: (value) => !!value
+    validate: (value) => value.match(RippleAddressRegex) ? true : 'Please enter a valid address'
   },
   {
     type: 'input',
     name: 'sourceSecret',
     message: 'Enter sender secret:',
-    validate: (value) => !!value
+    validate: (value) => {
+      try {
+        deriveKeypair(value)
+        return true
+      } catch (e) {
+        return 'Invalid secret'
+      }
+    }
   },
   {
     type: 'confirm',
