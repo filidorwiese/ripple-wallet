@@ -2,11 +2,11 @@
 const RippleAPI = require('ripple-lib').RippleAPI
 
 const api = new RippleAPI({server: 'wss://s1.ripple.com:443'})
-const address = 'raogoaf3XzotUXF7gJA97oCYKNBYGcyMMt'
+const address = ''
 
 api.connect().then(() => {
   api.getBalances(address).then(balances => {
     console.log(JSON.stringify(balances, null, 2))
-    process.exit()
+    process.exit(0)
   })
 })

@@ -1,7 +1,7 @@
 'use strict'
 const RippleAPI = require('ripple-lib').RippleAPI
 
-var api = new RippleAPI()
-var account = api.generateAddress()
+const api = new RippleAPI()
+const account = api.generateAddress()
 
 console.log(account)

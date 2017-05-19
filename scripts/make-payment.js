@@ -1,11 +1,11 @@
 'use strict'
 const RippleAPI = require('ripple-lib').RippleAPI
 
-const sourceAddress = 'INSERT ADDRESS HERE'
-const sourceSecret = 'INSERT SECRET HERE'
-const destinationAddress = 'INSERT ADDRESS HERE'
-const destinationTag = 'INSERT TAG'
-const xrpAmount = '20'
+const sourceAddress = ''
+const sourceSecret = ''
+const destinationAddress = ''
+const destinationTag = 0
+const xrpAmount = '5'
 
 const api = new RippleAPI({
   server: 'wss://s1.ripple.com:443'
@@ -13,7 +13,7 @@ const api = new RippleAPI({
 
 const instructions = {
   maxLedgerVersionOffset: 5,
-  maxFee: 0.15
+  maxFee: '0.15'
 }
 
 const payment = {

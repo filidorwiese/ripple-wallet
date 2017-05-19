@@ -1,17 +1,10 @@
 {
   "name": "ripple-wallet",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
+  "description": "Simple Ripple wallet made in node using Ripple-lib",
+  "author": "Filidor Wiese <fili@fili.nl>",
   "license": "ISC",
-  "devDependencies": {
-    "babel-register": "^6.24.1"
-  },
   "dependencies": {
-    "ripple": "^0.1.2"
+    "ripple-lib": "^0.17.7"
   }
 }
