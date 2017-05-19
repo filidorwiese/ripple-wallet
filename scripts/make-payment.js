@@ -6,7 +6,7 @@ const deriveKeypair = require('ripple-keypairs').deriveKeypair
 
 console.log('-----------------------------------------------')
 console.log(chalk.green('Ripple wallet'), '-', chalk.yellow('Make Payment'))
-console.log('-----------------------------------------------')
+console.log('-----------------------------------------------', "\n")
 
 const RippleAddressRegex = new RegExp(/^r[rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{27,35}$/)
 

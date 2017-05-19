@@ -7,7 +7,7 @@ const RippleAddressRegex = new RegExp(/^r[rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcde
 
 console.log('-----------------------------------------------')
 console.log(chalk.green('Ripple wallet'), '-', chalk.yellow('Balance Check'))
-console.log('-----------------------------------------------')
+console.log('-----------------------------------------------', "\n")
 
 const questions = [
   {
