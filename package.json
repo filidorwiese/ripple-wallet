@@ -1,14 +1,14 @@
 {
-  "name": "ripple-wallet",
+  "name": "ripple-wallet-cli",
   "version": "1.0.0",
-  "description": "Simple Ripple wallet made in node using Ripple-lib",
+  "description": "Simple Ripple Wallet client, made in node using Ripple-lib",
   "author": "Filidor Wiese <fili@fili.nl>",
   "license": "ISC",
-  "scripts": {
-    "balance": "node scripts/balance.js || true",
-    "generate-wallet-offline": "node scripts/generate-wallet-offline.js || true",
-    "make-payment": "node scripts/make-payment.js || true"
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:filidorwiese/ripple-wallet.git"
   },
+  "bin": "./bin/cmd.js",
   "dependencies": {
     "chalk": "1.1.3",
     "inquirer": "3.0.6",

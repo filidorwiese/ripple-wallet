@@ -2,9 +2,9 @@
 const chalk = require('chalk')
 const RippleAPI = require('ripple-lib').RippleAPI
 
-console.log('-----------------------------------------------')
-console.log(chalk.green('Ripple wallet'), '-', chalk.yellow('Generate Wallet'))
-console.log('-----------------------------------------------', "\n")
+console.log(chalk.green('-----------------------------------------------'))
+console.log(chalk.green('Ripple Wallet'), chalk.yellow('Generate Wallet'))
+console.log(chalk.green('-----------------------------------------------'), "\n")
 
 const api = new RippleAPI()
 const account = api.generateAddress()

@@ -12,7 +12,7 @@ Runs on Linux, Window and MacOSX
 - Making a payment from your existing wallet to another
 
 ### Installation
-1. Make sure you have the current [Node LTS](https://nodejs.org/en/) release installed on your system
+1. Make sure you have the current [Node LTS](https://nodejs.org/en/) release (or higher) installed on your system
 2. Git clone this repository into a local directory
 3. Run `npm install` the first time in that same directory
 

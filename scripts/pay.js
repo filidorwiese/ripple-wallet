@@ -4,9 +4,9 @@ const inquirer = require('inquirer')
 const RippleAPI = require('ripple-lib').RippleAPI
 const deriveKeypair = require('ripple-keypairs').deriveKeypair
 
-console.log('-----------------------------------------------')
-console.log(chalk.green('Ripple wallet'), '-', chalk.yellow('Make Payment'))
-console.log('-----------------------------------------------', "\n")
+console.log(chalk.green('-----------------------------------------------'))
+console.log(chalk.green('Ripple Wallet'), chalk.yellow('Make Payment'))
+console.log(chalk.green('-----------------------------------------------'), "\n")
 
 const RippleAddressRegex = new RegExp(/^r[rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{27,35}$/)
 
