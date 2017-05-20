@@ -15,8 +15,6 @@ const api = new RippleAPI({
 
 const RippleAddressRegex = new RegExp(/^r[rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{27,35}$/)
 
-
-
 const questions = [
   {
     type: 'input',
@@ -95,7 +93,7 @@ inquirer.prompt(questions).then((answers) => {
 
     console.log("\nConnected...")
 
-    Promise.all([
+    return Promise.all([
       api.getBalances(answers.sourceAddress, {currency: 'XRP'}),
       api.getBalances(answers.destinationAddress, {currency: 'XRP'})
     ]).then((currentBalances) => {
@@ -104,7 +102,7 @@ inquirer.prompt(questions).then((answers) => {
 
       console.log('Current destination balance:', chalk.green(_get(currentBalances, '[1][0].value', 0), 'XRP'))
 
-      api.preparePayment(answers.sourceAddress, payment, instructions).then(prepared => {
+      return api.preparePayment(answers.sourceAddress, payment, instructions).then(prepared => {
 
         console.log('Payment transaction prepared...')
 
@@ -112,7 +110,7 @@ inquirer.prompt(questions).then((answers) => {
 
         console.log('Payment transaction signed...')
 
-        api.submit(signedTransaction).then(() => {
+        return api.submit(signedTransaction).then(() => {
 
           console.log('Waiting for balance to update (use Ctrl-C to abort)')
 
@@ -155,6 +153,6 @@ function waitForBalancesUpdate(sourceAddress, destinationAddress, currentBalance
 }
 
 function fail (message) {
-  console.error(message)
+  console.error(chalk.red(message), "\n")
   process.exit(1)
 }
