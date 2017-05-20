@@ -3,12 +3,19 @@ const chalk = require('chalk')
 const inquirer = require('inquirer')
 const RippleAPI = require('ripple-lib').RippleAPI
 const deriveKeypair = require('ripple-keypairs').deriveKeypair
+const _get = require('lodash.get')
 
 console.log(chalk.green('-----------------------------------------------'))
 console.log(chalk.green('Ripple Wallet'), chalk.yellow('Make Payment'))
 console.log(chalk.green('-----------------------------------------------'), "\n")
 
+const api = new RippleAPI({
+  server: 'wss://s1.ripple.com:443'
+})
+
 const RippleAddressRegex = new RegExp(/^r[rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{27,35}$/)
+
+
 
 const questions = [
   {
@@ -61,10 +68,6 @@ inquirer.prompt(questions).then((answers) => {
     process.exit()
   }
 
-  const api = new RippleAPI({
-    server: 'wss://s1.ripple.com:443'
-  })
-
   const instructions = {
     maxLedgerVersionOffset: 5,
     maxFee: '0.15'
@@ -88,29 +91,36 @@ inquirer.prompt(questions).then((answers) => {
     }
   }
 
-  function quit (message) {
-    console.log(message)
-    process.exit(0)
-  }
-
-  function fail (message) {
-    console.error(message)
-    process.exit(1)
-  }
-
   api.connect().then(() => {
 
-    console.log('Connected...')
+    console.log("\nConnected...")
 
-    return api.preparePayment(answers.sourceAddress, payment, instructions).then(prepared => {
+    Promise.all([
+      api.getBalances(answers.sourceAddress, {currency: 'XRP'}),
+      api.getBalances(answers.destinationAddress, {currency: 'XRP'})
+    ]).then((currentBalances) => {
 
-      console.log('Payment transaction prepared...')
+      console.log('Current source balance:', chalk.green(_get(currentBalances, '[0][0].value', 0), 'XRP'))
 
-      const {signedTransaction} = api.sign(prepared.txJSON, answers.sourceSecret)
+      console.log('Current destination balance:', chalk.green(_get(currentBalances, '[1][0].value', 0), 'XRP'))
 
-      console.log('Payment transaction signed...')
+      api.preparePayment(answers.sourceAddress, payment, instructions).then(prepared => {
 
-      api.submit(signedTransaction).then(quit, fail)
+        console.log('Payment transaction prepared...')
+
+        const {signedTransaction} = api.sign(prepared.txJSON, answers.sourceSecret)
+
+        console.log('Payment transaction signed...')
+
+        api.submit(signedTransaction).then(() => {
+
+          console.log('Waiting for balance to update (use Ctrl-C to abort)')
+
+          waitForBalancesUpdate(answers.sourceAddress, answers.destinationAddress, currentBalances)
+
+        }, fail)
+
+      })
 
     })
 
@@ -118,3 +128,33 @@ inquirer.prompt(questions).then((answers) => {
 
 })
 
+
+function waitForBalancesUpdate(sourceAddress, destinationAddress, currentBalances) {
+
+  Promise.all([
+    api.getBalances(sourceAddress, {currency: 'XRP'}),
+    api.getBalances(destinationAddress, {currency: 'XRP'})
+  ]).then((newBalances) => {
+
+    if (_get(newBalances, '[0][0].value', 0) < _get(currentBalances, '[0][0].value', 0)) {
+
+      console.log('New source balance:', chalk.green(_get(newBalances, '[0][0].value', 0), 'XRP'))
+
+      console.log('New destination balance:', chalk.green(_get(newBalances, '[1][0].value', 0), 'XRP'))
+
+      process.exit(0)
+
+    } else {
+
+      setTimeout(() => waitForBalancesUpdate(sourceAddress, destinationAddress, currentBalances), 1000)
+
+    }
+
+  })
+
+}
+
+function fail (message) {
+  console.error(message)
+  process.exit(1)
+}
