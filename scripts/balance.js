@@ -3,7 +3,6 @@ const chalk = require('chalk')
 const inquirer = require('inquirer')
 const RippleAPI = require('ripple-lib').RippleAPI
 
-//rJysCK99GqUBmgB54mcV7NwxYH29NRs1QQ
 const RippleAddressRegex = new RegExp(/^r[rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{27,35}$/)
 
 console.log(chalk.green('-----------------------------------------------'))
