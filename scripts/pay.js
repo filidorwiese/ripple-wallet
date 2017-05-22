@@ -15,6 +15,34 @@ const api = new RippleAPI({
 
 const RippleAddressRegex = new RegExp(/^r[rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{27,35}$/)
 
+const waitForBalancesUpdate = (sourceAddress, destinationAddress, origSourceBalance) => {
+  Promise.all([
+    api.getBalances(sourceAddress, {currency: 'XRP'}),
+    api.getBalances(destinationAddress, {currency: 'XRP'})
+  ]).then((newBalances) => {
+
+    if (_get(newBalances, '[0][0].value', 0) < origSourceBalance) {
+
+      console.log('New source balance:', chalk.green(_get(newBalances, '[0][0].value', 0), 'XRP'))
+
+      console.log('New destination balance:', chalk.green(_get(newBalances, '[1][0].value', 0), 'XRP'))
+
+      process.exit(0)
+
+    } else {
+
+      setTimeout(() => waitForBalancesUpdate(sourceAddress, destinationAddress, origSourceBalance), 1000)
+
+    }
+
+  })
+}
+
+const fail = (message) => {
+  console.error(chalk.red(message), "\n")
+  process.exit(1)
+}
+
 const questions = [
   {
     type: 'input',
@@ -98,9 +126,17 @@ inquirer.prompt(questions).then((answers) => {
       api.getBalances(answers.destinationAddress, {currency: 'XRP'})
     ]).then((currentBalances) => {
 
-      console.log('Current source balance:', chalk.green(_get(currentBalances, '[0][0].value', 0), 'XRP'))
+      const sourceBalance = _get(currentBalances, '[0][0].value', 0)
+      console.log('Current source balance:', chalk.green(sourceBalance, 'XRP'))
+      if (sourceBalance - answers.amount < 20) {
+        fail('There should be at least 20 XRP remaining at the sender address')
+      }
 
-      console.log('Current destination balance:', chalk.green(_get(currentBalances, '[1][0].value', 0), 'XRP'))
+      const destinationBalance = _get(currentBalances, '[1][0].value', 0)
+      console.log('Current destination balance:', chalk.green(destinationBalance, 'XRP'))
+      if (destinationBalance + answers.amount < 20) {
+        fail('Send at least 20 XRP to create the destination address')
+      }
 
       return api.preparePayment(answers.sourceAddress, payment, instructions).then(prepared => {
 
@@ -114,7 +150,7 @@ inquirer.prompt(questions).then((answers) => {
 
           console.log('Waiting for balance to update (use Ctrl-C to abort)')
 
-          waitForBalancesUpdate(answers.sourceAddress, answers.destinationAddress, currentBalances)
+          waitForBalancesUpdate(answers.sourceAddress, answers.destinationAddress, sourceBalance)
 
         }, fail)
 
@@ -125,34 +161,3 @@ inquirer.prompt(questions).then((answers) => {
   }).catch(fail)
 
 })
-
-
-function waitForBalancesUpdate(sourceAddress, destinationAddress, currentBalances) {
-
-  Promise.all([
-    api.getBalances(sourceAddress, {currency: 'XRP'}),
-    api.getBalances(destinationAddress, {currency: 'XRP'})
-  ]).then((newBalances) => {
-
-    if (_get(newBalances, '[0][0].value', 0) < _get(currentBalances, '[0][0].value', 0)) {
-
-      console.log('New source balance:', chalk.green(_get(newBalances, '[0][0].value', 0), 'XRP'))
-
-      console.log('New destination balance:', chalk.green(_get(newBalances, '[1][0].value', 0), 'XRP'))
-
-      process.exit(0)
-
-    } else {
-
-      setTimeout(() => waitForBalancesUpdate(sourceAddress, destinationAddress, currentBalances), 1000)
-
-    }
-
-  })
-
-}
-
-function fail (message) {
-  console.error(chalk.red(message), "\n")
-  process.exit(1)
-}
