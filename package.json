@@ -1,6 +1,6 @@
 {
   "name": "ripple-wallet-cli",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Simple Ripple Wallet client, made in node using Ripple-lib",
   "author": "Filidor Wiese <fili@fili.nl>",
   "license": "ISC",
