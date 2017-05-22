@@ -32,7 +32,9 @@ To check the balance on your wallet, run:
 
 `$ ripple-wallet-cli balance`
 
-You'll be asked for the public address to check
+You'll be asked for the public address to check, or you can provide it directly on the command line:
+
+`$ ripple-wallet-cli balance rJysCK99GqUBmgB54mcV7NwxYH29NRs1QQ`
 
 #### Making a payment from your existing wallet to another
 
