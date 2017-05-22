@@ -85,6 +85,7 @@ const questions = [
   {
     type: 'confirm',
     name: 'sure',
+    default: false,
     message: 'Ready to send?'
   }
 ]
