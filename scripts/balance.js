@@ -11,7 +11,9 @@ console.log(chalk.green('Ripple Wallet'), chalk.yellow('Balance Check'))
 console.log(chalk.green('-----------------------------------------------'), "\n")
 
 const getBalance = (address) => {
-  const api = new RippleAPI({server: 'wss://s1.ripple.com:443'})
+  const api = new RippleAPI({
+    server: process.env.RIPPLE_API || 'wss://s1.ripple.com:443'
+  })
 
   api.connect().then(() => {
 
