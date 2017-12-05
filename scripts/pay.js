@@ -10,15 +10,15 @@ console.log(chalk.green('Ripple Wallet'), chalk.yellow('Make Payment'))
 console.log(chalk.green('-----------------------------------------------'), "\n")
 
 const api = new RippleAPI({
-  server: 'wss://s1.ripple.com:443'
+  server: process.env.RIPPLE_API || 'wss://s1.ripple.com:443'
 })
 
 const RippleAddressRegex = new RegExp(/^r[rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{27,35}$/)
 
 const waitForBalancesUpdate = (sourceAddress, destinationAddress, origSourceBalance) => {
   Promise.all([
-    api.getBalances(sourceAddress, {currency: 'XRP'}),
-    api.getBalances(destinationAddress, {currency: 'XRP'})
+    api.getBalances(sourceAddress, { currency: 'XRP' }),
+    api.getBalances(destinationAddress, { currency: 'XRP' })
   ]).then((newBalances) => {
 
     if (_get(newBalances, '[0][0].value', 0) < origSourceBalance) {
@@ -123,8 +123,8 @@ inquirer.prompt(questions).then((answers) => {
     console.log("\nConnected...")
 
     return Promise.all([
-      api.getBalances(answers.sourceAddress, {currency: 'XRP'}),
-      api.getBalances(answers.destinationAddress, {currency: 'XRP'})
+      api.getBalances(answers.sourceAddress, { currency: 'XRP' }),
+      api.getBalances(answers.destinationAddress, { currency: 'XRP' })
     ]).then((currentBalances) => {
 
       const sourceBalance = _get(currentBalances, '[0][0].value', 0)
@@ -143,7 +143,7 @@ inquirer.prompt(questions).then((answers) => {
 
         console.log('Payment transaction prepared...')
 
-        const {signedTransaction} = api.sign(prepared.txJSON, answers.sourceSecret)
+        const { signedTransaction } = api.sign(prepared.txJSON, answers.sourceSecret)
 
         console.log('Payment transaction signed...')
 
