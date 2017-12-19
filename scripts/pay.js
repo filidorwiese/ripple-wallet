@@ -115,7 +115,7 @@ inquirer.prompt(questions).then((answers) => {
 
   const instructions = {
     maxLedgerVersionOffset: 5,
-    maxFee: maxFee
+    maxFee
   }
 
   const payment = {
@@ -123,7 +123,7 @@ inquirer.prompt(questions).then((answers) => {
       address: answers.sourceAddress,
       maxAmount: {
         value: answers.amount.toString(),
-        currency: currency
+        currency
       }
     },
     destination: {
@@ -131,7 +131,7 @@ inquirer.prompt(questions).then((answers) => {
       tag: answers.destinationTag || undefined,
       amount: {
         value: answers.amount.toString(),
-        currency: currency
+        currency
       }
     }
   }
