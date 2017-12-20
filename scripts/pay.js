@@ -99,20 +99,10 @@ const questions = [
         return 'Invalid secret'
       }
     }
-  },
-  {
-    type: 'confirm',
-    name: 'sure',
-    default: false,
-    message: 'Ready to send?'
   }
 ]
 
 inquirer.prompt(questions).then((answers) => {
-  if (!answers.sure) {
-    process.exit()
-  }
-
   const instructions = {
     maxLedgerVersionOffset: 5,
     maxFee
@@ -137,42 +127,58 @@ inquirer.prompt(questions).then((answers) => {
   }
 
   api.connect().then(() => {
-
-    console.log("\nConnected...")
+    if (answers.sourceAddress === answers.destinationAddress) {
+      fail('Sender address not be the same as the destination address')
+    }
+    console.log()
 
     return Promise.all([
       api.getBalances(answers.sourceAddress, { currency: 'XRP' }),
       api.getBalances(answers.destinationAddress, { currency: 'XRP' })
         .catch(handleActNotFound)
     ]).then((currentBalances) => {
-
-      const sourceBalance = _get(currentBalances, '[0][0].value', 0)
-      console.log('Current source balance:', chalk.green(sourceBalance, 'XRP'))
-      if (sourceBalance - answers.amount < 20) {
-        fail('There should be at least 20 XRP remaining at the sender address')
-      }
-
       const destinationBalance = _get(currentBalances, '[1][0].value', 0)
+
       console.log('Current destination balance:', chalk.green(destinationBalance, 'XRP'))
       if (destinationBalance + answers.amount < 20) {
         fail('Send at least 20 XRP to create the destination address')
       }
 
-      return api.preparePayment(answers.sourceAddress, payment, instructions).then(prepared => {
+      const sourceBalance = _get(currentBalances, '[0][0].value', 0)
+      console.log('Current sender balance:', chalk.green(sourceBalance, 'XRP'))
+      if (sourceBalance - answers.amount < 20) {
+        fail('There should be at least 20 XRP remaining at the sender address')
+      }
 
-        console.log('Payment transaction prepared...')
+      inquirer.prompt([
+        {
+          type: 'confirm',
+          name: 'sure',
+          default: false,
+          message: 'Ready to send?'
+        }
+      ]).then((confirm) => {
+        if (!confirm.sure) {
+          process.exit()
+        }
 
-        const { signedTransaction } = api.sign(prepared.txJSON, answers.sourceSecret)
+        console.log("\nPreparing payment transaction...")
 
-        console.log('Payment transaction signed...')
+        return api.preparePayment(answers.sourceAddress, payment, instructions).then(prepared => {
 
-        return api.submit(signedTransaction).then(() => {
+          const { signedTransaction } = api.sign(prepared.txJSON, answers.sourceSecret)
 
-          console.log('Waiting for balance to update (use Ctrl-C to abort)')
+          console.log('Submitting payment...')
 
-          waitForBalancesUpdate(answers.sourceAddress, answers.destinationAddress, sourceBalance)
+          return api.submit(signedTransaction).then(() => {
 
-        }, fail)
+            console.log('Waiting for balance to update (use Ctrl-C to abort)')
+
+            waitForBalancesUpdate(answers.sourceAddress, answers.destinationAddress, sourceBalance)
+
+          }, fail)
+
+        })
 
       })
 
