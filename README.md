@@ -44,6 +44,10 @@ To make a payment from a wallet you control to another address, run:
 
 You'll be asked for the XRP amount to send, the destination address, the destination tag (optional), the sender address and finally the sender secret.
 
+Alternatively, you can provide these params on the command line:
+
+`$ ripple-wallet-cli pay --amount [amount] --to [destination address] --tag [destination tag] --from [source address]`
+
 ---
 
 Donations are welcome at `rJysCK99GqUBmgB54mcV7NwxYH29NRs1QQ` :)

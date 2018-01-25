@@ -89,7 +89,6 @@ const questions = [
   {
     type: 'input',
     name: 'sourceSecret',
-    default: argv.secret,
     message: 'Enter sender secret:',
     validate: (value) => {
       try {
