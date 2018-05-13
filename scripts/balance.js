@@ -3,8 +3,7 @@ const chalk = require('chalk')
 const minimist = require('minimist')
 const inquirer = require('inquirer')
 const RippleAPI = require('ripple-lib').RippleAPI
-
-const RippleAddressRegex = new RegExp(/^r[rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{27,35}$/)
+const RippleAddressCodec = require('ripple-address-codec')
 
 console.log(chalk.green('-----------------------------------------------'))
 console.log(chalk.green('Ripple Wallet'), chalk.yellow('Balance Check'))
@@ -88,7 +87,7 @@ const fail = (message) => {
   process.exit(1)
 }
 
-if (process.argv[3] && process.argv[3].match(RippleAddressRegex)) {
+if (process.argv[3] && RippleAddressCodec.isValidAddress(process.argv[3])) {
 
   getBalance(process.argv[3])
 
@@ -99,7 +98,7 @@ if (process.argv[3] && process.argv[3].match(RippleAddressRegex)) {
       type: 'input',
       name: 'wallet',
       message: 'Enter wallet address:',
-      validate: (value) => value.match(RippleAddressRegex) ? true : 'Please enter a valid address'
+      validate: (value) => RippleAddressCodec.isValidAddress(value) ? true : 'Please enter a valid address'
     }
   ]
 
