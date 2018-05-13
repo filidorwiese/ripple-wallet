@@ -2,10 +2,10 @@
 const chalk = require('chalk')
 const minimist = require('minimist')
 const inquirer = require('inquirer')
-const RippleAPI = require('ripple-lib').RippleAPI
-const deriveKeypair = require('ripple-keypairs').deriveKeypair
 const _get = require('lodash.get')
-const RippleKeypairs = require("ripple-keypairs")
+const RippleAPI = require('ripple-lib').RippleAPI
+const RippleKeypairs = require('ripple-keypairs')
+const RippleAddressCodec = require('ripple-address-codec')
 
 console.log(chalk.green('-----------------------------------------------'))
 console.log(chalk.green('Ripple Wallet'), chalk.yellow('Make Payment'))
@@ -18,8 +18,6 @@ const maxFee = argv['max-fee'] || '0.15'
 const api = new RippleAPI({
   server: process.env.RIPPLE_API || 'wss://s1.ripple.com:443'
 })
-
-const RippleAddressRegex = new RegExp(/^r[rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{27,35}$/)
 
 const waitForBalancesUpdate = (sourceAddress, destinationAddress, origSourceBalance) => {
   Promise.all([
@@ -70,7 +68,7 @@ const questions = [
     name: 'destinationAddress',
     default: argv.to,
     message: 'Enter destination address:',
-    validate: (value) => value.match(RippleAddressRegex) ? true : 'Please enter a valid address'
+    validate: (value) => RippleAddressCodec.isValidAddress(value) ? true : 'Please enter a valid address'
   },
   {
     type: 'input',
@@ -86,7 +84,7 @@ const questions = [
     message: 'Enter sender secret:',
     validate: (value) => {
       try {
-        deriveKeypair(value)
+        RippleKeypairs.deriveKeypair(value)
         return true
       } catch (e) {
         return 'Invalid secret'
