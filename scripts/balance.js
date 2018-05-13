@@ -42,7 +42,7 @@ const getBalance = (address) => {
           transactions.forEach(t => displayRecord(t, address))
           console.log()
         }
-        // console.log(transaction)
+
         process.exit(0)
       }, fail)
 
