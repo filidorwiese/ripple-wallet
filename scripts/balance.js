@@ -21,31 +21,32 @@ const getBalance = (address) => {
 
     // Show balances
     console.log(chalk.yellow('Current Balance'))
-    api.getBalances(address).then(balances => {
-      balances.filter(c => c.value > 0).map((currency) => {
-        console.log(currency.value, currency.currency)
-      })
-      console.log()
+    api.getBalances(address)
+      .then(balances => {
 
-      // process.exit(0)
-    }, fail)
-    .then(() => {
+        balances.filter(c => c.value > 0).map((currency) => {
+          console.log(currency.value, currency.currency)
+        })
+        console.log()
 
-      // Show recent transactions
-      api.getTransactions(address, {
-        limit: limitTransactions
-      }).then(transactions => {
-
-        if (transactions.length) {
-          console.log(chalk.yellow(`Last ${limitTransactions} transactions`))
-          transactions.forEach(t => displayRecord(t, address))
-          console.log()
-        }
-
-        process.exit(0)
       }, fail)
+      .then(() => {
 
-    })
+        // Show recent transactions
+        api.getTransactions(address, {
+          limit: limitTransactions
+        }).then(transactions => {
+
+          if (transactions.length) {
+            console.log(chalk.yellow(`Last ${limitTransactions} transactions`))
+            transactions.forEach(t => displayRecord(t, address))
+            console.log()
+          }
+
+          process.exit(0)
+        }, fail)
+
+      })
 
   }).catch(fail)
 }
