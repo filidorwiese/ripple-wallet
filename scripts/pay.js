@@ -14,6 +14,7 @@ console.log(chalk.green('-----------------------------------------------'), "\n"
 const argv = minimist(process.argv.slice(2))
 const currency = argv.currency || 'XRP'
 const maxFee = argv['max-fee'] || '0.15'
+const baseReserve = 20
 
 const api = new RippleAPI({
   server: process.env.RIPPLE_API || 'wss://s1.ripple.com:443'
@@ -134,14 +135,14 @@ inquirer.prompt(questions).then((answers) => {
       const destinationBalance = _get(currentBalances, '[1][0].value', 0)
 
       console.log('Current destination balance:', chalk.green(destinationBalance, 'XRP'))
-      if (destinationBalance + answers.amount < 20) {
-        fail('Send at least 20 XRP to create the destination address')
+      if (destinationBalance + answers.amount < baseReserve) {
+        fail(`Send at least ${baseReserve} XRP to create the destination address`)
       }
 
       const sourceBalance = _get(currentBalances, '[0][0].value', 0)
       console.log('Current sender balance:', chalk.green(sourceBalance, 'XRP'))
-      if (sourceBalance - answers.amount < 20) {
-        fail('There should be at least 20 XRP remaining at the sender address')
+      if (sourceBalance - answers.amount < baseReserve) {
+        fail(`There should be at least ${baseReserve} XRP remaining at the sender address`)
       }
 
       inquirer.prompt([
