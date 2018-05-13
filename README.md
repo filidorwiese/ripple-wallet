@@ -39,7 +39,7 @@ You'll be asked for the public address to check, or you can provide it directly 
 The output will also show the last 10 transactions.
 To see more transactions, you can up the limit:
 
-`$ stellar-wallet-cli balance GDBQN3B6R2TZGWH6YPH4BOLWIEPA7WR3WRVFPUMDRJGPVSEWZPGEB6JI --limit [number]`
+`$ ripple-wallet-cli balance rJysCK99GqUBmgB54mcV7NwxYH29NRs1QQ --limit [number]`
 
 #### Making a payment from your existing wallet to another
 
