@@ -132,16 +132,17 @@ inquirer.prompt(questions).then((answers) => {
       api.getBalances(answers.destinationAddress, { currency: config.currency })
         .catch(handleActNotFound)
     ]).then((currentBalances) => {
-      const destinationBalance = _get(currentBalances, '[1][0].value', 0)
+      const destinationBalance = +(_get(currentBalances, '[1][0].value', 0))
+      const sourceBalance = +(_get(currentBalances, '[0][0].value', 0))
+      const amount = +(answers.amount)
 
       console.log('Current destination balance:', chalk.green(destinationBalance, config.currency))
-      if (destinationBalance + answers.amount < config.baseReserve) {
+      if (destinationBalance + amount < config.baseReserve) {
         fail(`Send at least ${config.baseReserve} ${config.currency} to create the destination address`)
-      }
 
-      const sourceBalance = _get(currentBalances, '[0][0].value', 0)
+      }
       console.log('Current sender balance:', chalk.green(sourceBalance, config.currency))
-      if (sourceBalance - answers.amount < config.baseReserve) {
+      if (sourceBalance - amount < config.baseReserve) {
         fail(`There should be at least ${config.baseReserve} ${config.currency} remaining at the sender address`)
       }
 
