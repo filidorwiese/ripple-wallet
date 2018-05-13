@@ -2,10 +2,10 @@
 const chalk = require('chalk')
 const minimist = require('minimist')
 const inquirer = require('inquirer')
-const RippleAPI = require('ripple-lib').RippleAPI
-const deriveKeypair = require('ripple-keypairs').deriveKeypair
 const _get = require('lodash.get')
-const RippleKeypairs = require("ripple-keypairs")
+const RippleAPI = require('ripple-lib').RippleAPI
+const RippleKeypairs = require('ripple-keypairs')
+const RippleAddressCodec = require('ripple-address-codec')
 
 console.log(chalk.green('-----------------------------------------------'))
 console.log(chalk.green('Ripple Wallet'), chalk.yellow('Make Payment'))
@@ -14,12 +14,11 @@ console.log(chalk.green('-----------------------------------------------'), "\n"
 const argv = minimist(process.argv.slice(2))
 const currency = argv.currency || 'XRP'
 const maxFee = argv['max-fee'] || '0.15'
+const baseReserve = 20
 
 const api = new RippleAPI({
   server: process.env.RIPPLE_API || 'wss://s1.ripple.com:443'
 })
-
-const RippleAddressRegex = new RegExp(/^r[rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{27,35}$/)
 
 const waitForBalancesUpdate = (sourceAddress, destinationAddress, origSourceBalance) => {
   Promise.all([
@@ -70,7 +69,7 @@ const questions = [
     name: 'destinationAddress',
     default: argv.to,
     message: 'Enter destination address:',
-    validate: (value) => value.match(RippleAddressRegex) ? true : 'Please enter a valid address'
+    validate: (value) => RippleAddressCodec.isValidAddress(value) ? true : 'Please enter a valid address'
   },
   {
     type: 'input',
@@ -86,7 +85,7 @@ const questions = [
     message: 'Enter sender secret:',
     validate: (value) => {
       try {
-        deriveKeypair(value)
+        RippleKeypairs.deriveKeypair(value)
         return true
       } catch (e) {
         return 'Invalid secret'
@@ -136,14 +135,14 @@ inquirer.prompt(questions).then((answers) => {
       const destinationBalance = _get(currentBalances, '[1][0].value', 0)
 
       console.log('Current destination balance:', chalk.green(destinationBalance, 'XRP'))
-      if (destinationBalance + answers.amount < 20) {
-        fail('Send at least 20 XRP to create the destination address')
+      if (destinationBalance + answers.amount < baseReserve) {
+        fail(`Send at least ${baseReserve} XRP to create the destination address`)
       }
 
       const sourceBalance = _get(currentBalances, '[0][0].value', 0)
       console.log('Current sender balance:', chalk.green(sourceBalance, 'XRP'))
-      if (sourceBalance - answers.amount < 20) {
-        fail('There should be at least 20 XRP remaining at the sender address')
+      if (sourceBalance - answers.amount < baseReserve) {
+        fail(`There should be at least ${baseReserve} XRP remaining at the sender address`)
       }
 
       inquirer.prompt([
