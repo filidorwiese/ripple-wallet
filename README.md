@@ -51,7 +51,7 @@ You'll be asked for the XRP amount to send, the destination address, the destina
 
 Alternatively, you can provide these params on the command line:
 
-`$ ripple-wallet-cli pay --amount [amount] --to [destination address] --tag [destination tag] --from [source address]`
+`$ ripple-wallet-cli pay --amount [amount] --to [destination address] --tag [destination tag]`
 
 ---
 

@@ -5,6 +5,7 @@ const inquirer = require('inquirer')
 const RippleAPI = require('ripple-lib').RippleAPI
 const deriveKeypair = require('ripple-keypairs').deriveKeypair
 const _get = require('lodash.get')
+const RippleKeypairs = require("ripple-keypairs")
 
 console.log(chalk.green('-----------------------------------------------'))
 console.log(chalk.green('Ripple Wallet'), chalk.yellow('Make Payment'))
@@ -81,13 +82,6 @@ const questions = [
   },
   {
     type: 'input',
-    name: 'sourceAddress',
-    default: argv.from,
-    message: 'Enter sender address:',
-    validate: (value) => value.match(RippleAddressRegex) ? true : 'Please enter a valid address'
-  },
-  {
-    type: 'input',
     name: 'sourceSecret',
     message: 'Enter sender secret:',
     validate: (value) => {
@@ -102,6 +96,9 @@ const questions = [
 ]
 
 inquirer.prompt(questions).then((answers) => {
+  const keypair = RippleKeypairs.deriveKeypair(answers.sourceSecret)
+  const sourceAddress = RippleKeypairs.deriveAddress(keypair.publicKey)
+
   const instructions = {
     maxLedgerVersionOffset: 5,
     maxFee
@@ -109,7 +106,7 @@ inquirer.prompt(questions).then((answers) => {
 
   const payment = {
     source: {
-      address: answers.sourceAddress,
+      address: sourceAddress,
       maxAmount: {
         value: answers.amount.toString(),
         currency
@@ -126,13 +123,13 @@ inquirer.prompt(questions).then((answers) => {
   }
 
   api.connect().then(() => {
-    if (answers.sourceAddress === answers.destinationAddress) {
+    if (sourceAddress === answers.destinationAddress) {
       fail('Sender address not be the same as the destination address')
     }
     console.log()
 
     return Promise.all([
-      api.getBalances(answers.sourceAddress, { currency: 'XRP' }),
+      api.getBalances(sourceAddress, { currency: 'XRP' }),
       api.getBalances(answers.destinationAddress, { currency: 'XRP' })
         .catch(handleActNotFound)
     ]).then((currentBalances) => {
@@ -163,7 +160,7 @@ inquirer.prompt(questions).then((answers) => {
 
         console.log("\nPreparing payment transaction...")
 
-        return api.preparePayment(answers.sourceAddress, payment, instructions).then(prepared => {
+        return api.preparePayment(sourceAddress, payment, instructions).then(prepared => {
 
           const { signedTransaction } = api.sign(prepared.txJSON, answers.sourceSecret)
 
@@ -173,7 +170,7 @@ inquirer.prompt(questions).then((answers) => {
 
             console.log('Waiting for balance to update (use Ctrl-C to abort)')
 
-            waitForBalancesUpdate(answers.sourceAddress, answers.destinationAddress, sourceBalance)
+            waitForBalancesUpdate(sourceAddress, answers.destinationAddress, sourceBalance)
 
           }, fail)
 
