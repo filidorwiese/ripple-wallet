@@ -1,5 +1,5 @@
 {
   "currency": "XRP",
   "baseReserve": 20,
-  "maxFee": 0.15
+  "maxFee": "0.15"
 }
