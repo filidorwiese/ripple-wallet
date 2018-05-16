@@ -38,7 +38,7 @@ const getBalance = (address) => {
         }).then(transactions => {
 
           if (transactions.length) {
-            console.log(chalk.yellow(`Last ${limitTransactions} transactions`))
+            console.log(chalk.yellow(`Last ${transactions.length} transactions`))
             transactions.forEach(t => displayRecord(t, address))
             console.log()
           }
