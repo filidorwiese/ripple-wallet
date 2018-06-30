@@ -53,9 +53,6 @@ Alternatively, you can provide these params on the command line:
 
 `$ ripple-wallet-cli pay --amount [amount] --to [destination address] --tag [destination tag]`
 
----
-
-Donations are welcome at `rJysCK99GqUBmgB54mcV7NwxYH29NRs1QQ` :)
 
 ### ISC License
 
