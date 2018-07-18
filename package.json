@@ -14,11 +14,13 @@
   },
   "dependencies": {
     "chalk": "2.4.1",
+    "good-table": "^1.0.3",
     "inquirer": "5.2.0",
     "lodash.get": "4.4.2",
     "minimist": "1.2.0",
+    "moment": "^2.22.2",
     "ripple-address-codec": "2.0.1",
     "ripple-keypairs": "0.10.1",
-    "ripple-lib": "1.0.0-beta.0"
+    "ripple-lib": "1.0.0-beta.3"
   }
 }
