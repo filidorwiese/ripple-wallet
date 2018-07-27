@@ -66,7 +66,7 @@ const getBalance = (address) => {
                       moment.unix(channel.Expiration + EPOCH_OFFSET).utc().format() : 'undefined')
                 ])
               })
-              channels.push(['Total', '', (totalAmount / 1000000.0).toFixed(6), (totalBalance / 1000000.0).toFixed(6)])
+              channels.push(['Total', '' + (channels.length - 1), (totalAmount / 1000000.0).toFixed(6), (totalBalance / 1000000.0).toFixed(6)])
               console.log(table(channels))
             } else {
               console.log(' - NONE - ')
