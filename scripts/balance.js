@@ -82,27 +82,18 @@ const getBalance = (address) => {
         api.getTransactions(address, {
           limit: limitTransactions
         }).then(transactions => {
-
           if (transactions.length) {
-            const channelCache = {}
-            const txLookups = [
-              Promise.resolve(['Date and time', 'Transaction ID', 'Type', '', 'Value', 'Fee', '', '', 'Counterparty', ''])
+            const txs = [
+              ['Date and time', 'Transaction ID', 'Type', '', 'Value', 'Fee', '', '', 'Counterparty', '']
             ]
             transactions.forEach(t => {
-              const record = getRecord(t, address)
-              if(record[6] === 'UNKNOWN') {
-                txLookups.push(getPaymentChannelAccount(api, t.specification.channel, record, channelCache))
-              } else {
-                txLookups.push(Promise.resolve(record))
-              }
+              txs.push(getRecord(t, address))
             })
 
-            Promise.all(txLookups).then(rows => {
-              console.log(chalk.yellow(`Last ${transactions.length} transactions`))
-              console.log(table(rows))
-              console.log()
-              process.exit(0)
-            })
+            console.log(chalk.yellow(`Last ${transactions.length} transactions`))
+            console.log(table(txs))
+            console.log()
+            process.exit(0)
           }
 
         }, fail)
@@ -111,24 +102,7 @@ const getBalance = (address) => {
 
   }).catch(fail)
 }
-const getPaymentChannelAccount = (api, channelId, record, cache) => {
-  
-  if(cache[channelId]) {
-    record[6] = cache[channelId]
-    return Promise.resolve(record)
-  }
 
-  return api.getPaymentChannel(channelId)
-  .then(channel => {
-    cache[channelId] = channel.account
-    record[6] = channel.account
-    return record
-  })
-  .catch((e) => {
-    return record
-  })
-
-}
 const getRecord = (record, address) => {
 
   let outcome = (record.outcome.result === "tesSUCCESS")
@@ -253,7 +227,6 @@ const getRecord = (record, address) => {
       type = record.type
       amount = ''
       symbol = ''
-      direction = ''
       counterparty = record.address
       currency = '???'
       break
