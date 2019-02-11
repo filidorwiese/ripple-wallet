@@ -59,16 +59,15 @@ const displayRecord = (record, address) => {
     case 'payment':
       let amount, currency, plusMinus, directionArrow, to
 
+      amount = +parseFloat(source.maxAmount.value).toFixed(5)
+      currency = source.maxAmount.currency
+
       if (source.address === address) {
-        amount = +parseFloat(source.maxAmount.value).toFixed(5)
-        currency = source.maxAmount.currency
         plusMinus = '-'
         directionArrow =  '→'
         to = destination.address
 
       } else {
-        amount = +parseFloat(destination.amount.value).toFixed(5)
-        currency = destination.amount.currency
         plusMinus = '+'
         directionArrow =  '←'
         to = source.address
