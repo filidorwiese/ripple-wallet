@@ -87,7 +87,7 @@ const fail = (message) => {
   process.exit(1)
 }
 
-if (process.argv[3] && RippleAddressCodec.isValidAddress(process.argv[3])) {
+if (process.argv[3] && RippleAddressCodec.isValidClassicAddress(process.argv[3])) {
 
   getBalance(process.argv[3])
 
@@ -98,7 +98,7 @@ if (process.argv[3] && RippleAddressCodec.isValidAddress(process.argv[3])) {
       type: 'input',
       name: 'wallet',
       message: 'Enter wallet address:',
-      validate: (value) => RippleAddressCodec.isValidAddress(value) ? true : 'Please enter a valid address'
+      validate: (value) => RippleAddressCodec.isValidClassicAddress(value) ? true : 'Please enter a valid address'
     }
   ]
 

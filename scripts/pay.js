@@ -69,7 +69,7 @@ const questions = [
     name: 'destinationAddress',
     default: argv.to,
     message: 'Enter destination address:',
-    validate: (value) => RippleAddressCodec.isValidAddress(value) ? true : 'Please enter a valid address'
+    validate: (value) => RippleAddressCodec.isValidClassicAddress(value) ? true : 'Please enter a valid address'
   },
   {
     type: 'input',
