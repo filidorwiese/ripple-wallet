@@ -17,8 +17,8 @@
     "inquirer": "^7.3.3",
     "lodash.get": "^4.4.2",
     "minimist": "^1.2.5",
-    "ripple-address-codec": "^4.1.1",
-    "ripple-keypairs": "^1.0.2",
-    "ripple-lib": "^1.8.2"
+    "ripple-address-codec": "^4.1.2",
+    "ripple-keypairs": "^1.0.3",
+    "ripple-lib": "^1.9.3"
   }
 }
